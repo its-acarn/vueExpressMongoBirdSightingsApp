@@ -39,10 +39,11 @@ const createRouter = function (collection) {
         console.error(err);
         res.status(500);
         res.json({ status: 500, error: err });
-  })
+      });
+  });
 
     router.delete('/:id', (req, res) => {
-      const id = ObjectId(req.params.id);
+      const id = ObjectId(req.params.id);         // on the request there are params, they can come from multiple places, we are using params to pull out stuff like :id (:id adds a param to params with the value of whatever is passed into :id)
       collection
         .deleteOne({ _id: id })                            // deleteOne takes a query object like findOne does
         .then(result => res.json(result))
@@ -59,21 +60,17 @@ const createRouter = function (collection) {
       collection
         .findOneAndUpdate(                        // findOneAndUpdate takes 2 objects and one optional object
           { _id: id },                            // find object
-          { $set: updatedData },                  // set the document to this
+          { $set: updatedData },                  // set the document to this. $set is an alias for addFields.
           { returnOriginal: false }               // on return, getting the database to give us the new docuemnt after the update and not the original before the object
         )
-        .then(result => res.json(result.value))   // .ops came out of nowhere, so does .value
+        .then(result => res.json(result.value))   // .ops came out of nowhere, so does .value they are just different responses from different database operations
         .catch(err => {
           console.error(err);
           res.status(500);
           res.json({ status: 500, error: err });
     });
   });
-
-
-
-
-
+  
   return router;
 
 };

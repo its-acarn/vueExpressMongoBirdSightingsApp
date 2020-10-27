@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const parser = require('body-parser');
+const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const createRouter = require('./helpers/create_router');
 
 app.use(parser.json());
+app.use(cors());
 
 MongoClient.connect('mongodb://localhost:27017')      // mongodb not http because we are using mongodbs own language. returns a promise so anything afterwards in the .then runs after promise is fullfilled.
   .then(client => {
