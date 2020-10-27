@@ -7,12 +7,12 @@ const createRouter = function (collection) {
 
   router.get('/', (req, res) => {
     collection
-      .find()      // find returns a mongodb cursor, 
-      .toArray()   // this needs concverted to an array in order to be converted to json, this takes indeterminate time so is a promise.
-      .then(docs => res.json(docs))   // converts our found array to json
-      .catch(err => {   // in the event of error in promise, catch runs
-        console.error(err);   // send error to console (red)
-        res.status(500);      //  default 500 comes from ??????
+      .find()                                   // find returns a mongodb cursor, 
+      .toArray()                                // this needs concverted to an array in order to be converted to json, this takes indeterminate time so is a promise.
+      .then(docs => res.json(docs))             // converts our found array to json
+      .catch(err => {                           // in the event of error in promise, catch runs
+        console.error(err);                     // send error to console (red)
+        res.status(500);                        //  default 500 comes from ??????
         res.json({ status: 500, error: err });  // creates error object - ?????
       });
   });
@@ -28,7 +28,23 @@ const createRouter = function (collection) {
         res.status(500);
         res.json({ status: 500, error: err });
       });
-    });
+  });
+
+  router.post('/', (req, res) => {
+    const newData = req.body;                   // make sure you are using bodyparsor.json for req.body
+    collection
+      .insertOne(newData)                       // insertOne(newData) inserts the newData into the DB.
+      .then(result => res.json(result.ops[0]))  // ops is an array in the object of results which contains an object of the data plus an object of the _id
+      .catch(err => {
+        console.error(err);
+        res.status(500);
+        res.json({ status: 500, error: err });
+  })
+
+
+
+
+
 
   return router;
 
