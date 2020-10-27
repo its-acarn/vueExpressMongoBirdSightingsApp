@@ -50,7 +50,25 @@ const createRouter = function (collection) {
           console.error(err);
           res.status(500);
           res.json({ status: 500, error: err });
-    })
+    });
+  });
+
+    router.put('/:id', (req, res) => {
+      const id = ObjectId(req.params.id);
+      const updatedData = req.body;
+      collection
+        .findOneAndUpdate(                        // findOneAndUpdate takes 2 objects and one optional object
+          { _id: id },                            // find object
+          { $set: updatedData },                  // set the document to this
+          { returnOriginal: false }               // on return, getting the database to give us the new docuemnt after the update and not the original before the object
+        )
+        .then(result => res.json(result.value))   // .ops came out of nowhere, so does .value
+        .catch(err => {
+          console.error(err);
+          res.status(500);
+          res.json({ status: 500, error: err });
+    });
+  });
 
 
 
