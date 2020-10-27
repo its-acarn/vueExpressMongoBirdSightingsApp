@@ -1,17 +1,17 @@
 <template lang="html">
-	<form id="sightings-form">
+	<form id="sightings-form" v-on:submit="addSighting">
 		<h2>Add a Sighting</h2>
 		<div class="formWrap">
 			<label for="species">Species:</label>
-			<input type="text" id="species" />
+			<input required type="text" id="species" v-model="species" />
 		</div>
 		<div class="formWrap">
 			<label for="location">Location:</label>
-			<input type="text" id="location" />
+			<input required type="text" id="location" v-model="location" />
 		</div>
 		<div class="formWrap">
 			<label for="date">Date:</label>
-			<input type="date" id="date" />
+			<input required type="date" id="date" v-model="date" />
 		</div>
 
 		<input type="submit" value="Save" id="save"/>
@@ -19,15 +19,26 @@
 </template>
 
 <script>
+import { eventBus } from '@/main.js';
+
 export default {
 	name: 'sightings-form',
-	data() {
+	data() {					// data() links up with v-models in html
 		return {
-
+			species: "",
+			location: "",
+			date: ""
 		}
 	},
 	methods: {
-
+		addSighting: function(event) {
+			event.preventDefault();
+			const sighting = {species: this.species, location: this.location, date: this.date}
+			eventBus.$emit('sighting-added', (sighting))
+			this.species = "";
+			this.location = "";
+			this.date = "";
+		}
 	}
 }
 </script>

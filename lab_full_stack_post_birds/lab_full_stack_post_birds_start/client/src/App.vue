@@ -9,6 +9,7 @@
 import SightingsForm from './components/SightingsForm';
 import SightingsGrid from './components/SightingsGrid';
 import SightingService from './services/SightingService.js';
+import { eventBus } from '@/main.js';
 
 export default {
   name: 'app',
@@ -23,11 +24,28 @@ export default {
   },
 	mounted() {
     this.fetchSightings();
+
+    eventBus.$on('sighting-added', (sightingDetails) => {
+      this.postSighting(sightingDetails)
+    }),
+
+    eventBus.$on('delete-sighting', (sightingId) => {
+      this.deleteSighting(sightingId)
+    })
   },
+  
   methods: {
     fetchSightings() {
       SightingService.getSightings()
-        .then(sightings => this.sightings = sightings);
+      .then(sightings => this.sightings = sightings);
+    },
+    postSighting(sightingDetails) {
+      SightingService.postSighting(sightingDetails)
+      .then(this.fetchSightings);
+    },
+    deleteSighting(sightingId) {
+      SightingService.deleteSighting(sightingId)
+      .then(this.fetchSightings);
     }
   }
 }
